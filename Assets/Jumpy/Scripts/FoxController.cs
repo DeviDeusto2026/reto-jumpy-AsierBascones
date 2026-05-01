@@ -4,16 +4,15 @@ using UnityEngine;
 
 public class FoxController : MonoBehaviour
 {
-    [Header("ConfiguraciÛn de Salto")]
-    public float jumpForce = 6f;
+    [Header("Configuraci√≥n de Salto")]
+    public float jumpForce = 9f;
     [SerializeField]
     private bool canJump;
 
-    [Header("ConfiguraciÛn de Movimiento")]
+    [Header("Configuraci√≥n de Movimiento")]
     [SerializeField]
-    private float speed = 10f;
+    private float speed = 6f;
 
-    // Variable para guardar el Rigidbody y no buscarlo en cada frame
     private Rigidbody rb;
     private Vector3 moveDirection;
 
@@ -56,15 +55,11 @@ public class FoxController : MonoBehaviour
 
     private void ApplyMovement()
     {
-        if (moveDirection.magnitude > 0)
-        {
-            Vector3 newPosition = rb.position + moveDirection * speed * Time.fixedDeltaTime;
-            rb.MovePosition(newPosition);
-        }
+            rb.linearVelocity = new Vector3(moveDirection.x * speed, rb.linearVelocity.y, 0f);
     }
     private void HandleOneWayPlatforms()
     {
-        // rb.velocity.y es positivo cuando el zorro est· subiendo por el aire
+        // La velocidad del rb es positiva cuando el zorro est√° subiendo
         if (rb.linearVelocity.y > 0)
         {
             // Ignoramos los choques entre la capa Player y la capa ground
@@ -72,7 +67,7 @@ public class FoxController : MonoBehaviour
         }
         else
         {
-            // Si la velocidad es 0 o negativa (est· cayendo), reactivamos los choques para que aterrice
+            // Si la velocidad del rb es 0 o negativa (est√° cayendo), reactivamos los choques para que aterrice
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("ground"), false);
         }
     }
