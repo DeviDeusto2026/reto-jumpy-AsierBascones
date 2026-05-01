@@ -38,36 +38,41 @@ public class FoxController : MonoBehaviour
         if (canJump && Input.GetKeyDown(KeyCode.Space))
         {
             Debug.Log("Espacio pulsado");
-            // ForceMode.Impulse para que el salto sea inmediato
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-
-            // Para evitar el doble salto
             canJump = false;
         }
     }
 
     private void ProcessInput()
     {
-        // Solo nos hace falta mover en el eje x
         float moveX = Input.GetAxis("Horizontal");
         moveDirection = new Vector3(moveX, 0f, 0f);
+
+        if (moveX > 0)
+        {
+            // Giro a la derecha
+            transform.rotation = Quaternion.Euler(0f, 90f, 0f);
+        }
+        else if (moveX < 0)
+        {
+            // Giro a la izquierda
+            transform.rotation = Quaternion.Euler(0f, -90f, 0f);
+        }
     }
 
     private void ApplyMovement()
     {
-            rb.linearVelocity = new Vector3(moveDirection.x * speed, rb.linearVelocity.y, 0f);
+        rb.linearVelocity = new Vector3(moveDirection.x * speed, rb.linearVelocity.y, 0f);
     }
+
     private void HandleOneWayPlatforms()
     {
-        // La velocidad del rb es positiva cuando el zorro está subiendo
         if (rb.linearVelocity.y > 0)
         {
-            // Ignoramos los choques entre la capa Player y la capa ground
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("ground"), true);
         }
         else
         {
-            // Si la velocidad del rb es 0 o negativa (está cayendo), reactivamos los choques para que aterrice
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("ground"), false);
         }
     }
