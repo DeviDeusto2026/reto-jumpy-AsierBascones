@@ -26,6 +26,7 @@ public class FoxController : MonoBehaviour
     {
         ProcessInput();
         JumpIsNeeded();
+        HandleOneWayPlatforms();
     }
 
     void FixedUpdate()
@@ -59,6 +60,20 @@ public class FoxController : MonoBehaviour
         {
             Vector3 newPosition = rb.position + moveDirection * speed * Time.fixedDeltaTime;
             rb.MovePosition(newPosition);
+        }
+    }
+    private void HandleOneWayPlatforms()
+    {
+        // rb.velocity.y es positivo cuando el zorro está subiendo por el aire
+        if (rb.linearVelocity.y > 0)
+        {
+            // Ignoramos los choques entre la capa Player y la capa ground
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("ground"), true);
+        }
+        else
+        {
+            // Si la velocidad es 0 o negativa (está cayendo), reactivamos los choques para que aterrice
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("ground"), false);
         }
     }
 
