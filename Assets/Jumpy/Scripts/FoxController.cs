@@ -16,6 +16,9 @@ public class FoxController : MonoBehaviour
     private Rigidbody rb;
     private Vector3 moveDirection;
 
+    [Header("Animaciones")]
+    public Animator anim;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -40,6 +43,8 @@ public class FoxController : MonoBehaviour
             Debug.Log("Espacio pulsado");
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             canJump = false;
+
+            if (anim != null) anim.SetBool("IsJumping", true);
         }
     }
 
@@ -58,6 +63,8 @@ public class FoxController : MonoBehaviour
             // Giro a la izquierda
             transform.rotation = Quaternion.Euler(0f, -90f, 0f);
         }
+
+        if (anim != null) anim.SetFloat("Speed", Mathf.Abs(moveX));
     }
 
     private void ApplyMovement()
@@ -90,6 +97,8 @@ public class FoxController : MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("ground"))
         {
             canJump = true;
+
+            if (anim != null) anim.SetBool("IsJumping", false);
         }
     }
 }
